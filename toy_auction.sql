@@ -1,9 +1,7 @@
 --
 -- Toy Auction Database Version 4
 --  (includes the Auction table);
--- 	  using time functions from http://weblogs.sqlteam.com/jeffs/archive/2007/01/02/56079.aspx
--- 
--- 
+--
 
 CREATE Table Users (
 	UserID int IDENTITY PRIMARY KEY,
@@ -22,12 +20,12 @@ CREATE TABLE Colors(
 );
 GO
 CREATE TABLE Toys (
-	ToyID int IDENTITY PRIMARY KEY, 
+	ToyID int IDENTITY PRIMARY KEY,
 	Name varchar(50) NOT NULL,
 	NumberLegs int,
 	ColorID int FOREIGN KEY REFERENCES Colors(ColorID),
 	OwnerID int NOT NULL FOREIGN KEY REFERENCES Users(UserID)
-); 
+);
 GO
 CREATE Table Auctions (
 	AuctionID int IDENTITY PRIMARY KEY,
@@ -45,138 +43,6 @@ CREATE Table CurrentBids (
 	Bid decimal(5) NOT NULL,
 	PRIMARY KEY(BidderID, AuctionID, BidTime)
 );
--- ------------------------------------
--- Views
--- ------------------------------------
-CREATE VIEW AuctionWinners AS
-SELECT Users.Name 'Winner', Toys.Name 'Toy', '$'+CONVERT(varchar(5), Auctions.WinningBid,101) 'Paid'
-FROM Users 
-	Join Auctions On Auctions.WinningBidderID = Users.UserID
-	JOIN Toys On Auctions.ToyID = Toys.ToyID
-GO
--- --------------------------------------------
--- User-Defined Functions
--- --------------------------------------------
-CREATE FUNCTION ownerName( @toyid int )
--- Returns the User's name who currently owns the given toy
-RETURNS varchar(25)
-AS
-	BEGIN
-	RETURN (select users.name 
-		    from users join toys 
-			on users.userid = toys.ownerid
-			where toys.toyID=@toyid)
-	END
-GO
-CREATE FUNCTION IsValidEmail(@email VARCHAR(255))   
---Returns true if the string is a valid email address.  
-RETURNS bit  
-as  
-BEGIN  
-     DECLARE @valid bit  
-     IF @email IS NOT NULL   
-          SET @email = LOWER(@email)  
-          SET @valid = 0  
-          IF @email like '[a-z,0-9,_,-]%@[a-z,0-9,_,-]%.[a-z][a-z]%'  
-             AND @email NOT like '%@%@%'  
-             AND CHARINDEX('.@',@email) = 0  
-             AND CHARINDEX('..',@email) = 0  
-             AND CHARINDEX(',',@email) = 0  
-             AND RIGHT(@email,1) between 'a' AND 'z'  
-               SET @valid=1  
-     RETURN @valid  
-END
-GO
-create  function DateOnly(@DateTime DateTime)
--- Returns @DateTime at midnight; i.e., it removes the time portion of a DateTime value.
-returns datetime
-as
-    begin
-    return dateadd(dd,0, datediff(dd,0,@DateTime))
-    end
-go
-
-create function Date(@Year int, @Month int, @Day int)
--- returns a datetime value for the specified year, month and day
--- Thank you to Michael Valentine Jones for this formula (see comments).
-returns datetime
-as
-    begin
-    return dateadd(month,((@Year-1900)*12)+@Month-1,@Day-1)
-    end
-go
-
-create function Time(@Hour int, @Minute int, @Second int)
--- Returns a datetime value for the specified time at the "base" date (1/1/1900)
--- Many thanks to MVJ for providing this formula (see comments). 
-returns datetime
-as
-    begin
-    return dateadd(ss,(@Hour*3600)+(@Minute*60)+@Second,0)
-    end
-go
-
-create function TimeOnly(@DateTime DateTime)
--- returns only the time portion of a DateTime, at the "base" date (1/1/1900)
--- Thanks, Peso! 
-returns datetime
-as
-    begin
-    return dateadd(day, -datediff(day, 0, @datetime), @datetime)
-    end
-go
-
-create function DateTime(@Year int, @Month int, @Day int, @Hour int, @Minute int, @Second int)
--- returns a dateTime value for the date and time specified.
-returns datetime
-as
-    begin
-    return dbo.Date(@Year,@Month,@Day) + dbo.Time(@Hour, @Minute,@Second)
-    end
-go
-create function TimeSpan(@Days int, @Hours int, @Minutes int, @Seconds int)
--- returns a datetime the specified # of days/hours/minutes/seconds from the "base" date of 1/1/1900 (a "TimeSpan")
-returns datetime
-as
-    begin
-    return dbo.Time(@Hours,@Minutes,@Seconds) + @Days
-    end
-
-create function TimeSpanUnits(@Unit char(1), @TimeSpan datetime)
--- returns the # of units specified in the TimeSpan.
--- The Unit parameter can be: "d" = days, "h" = hours, "m" = minutes, "s" = seconds
-returns int
-as
-    begin
-    return case @Unit 
-        when 'd' then datediff(day, 0, @TimeSpan)
-        when 'h' then datediff(hour, 0, @TimeSpan)
-        when 'm' then datediff(minute, 0, @TimeSpan)
-        when 's' then datediff(second, 0, @TimeSpan)
-        else Null end
-	end
-	
-	CREATE FUNCTION toyName( @toyid int )
--- Returns the Toy's name for the given toy
-RETURNS varchar(25)
-AS
-	BEGIN
-	RETURN (select Name From Toys
-			where toyID=@toyid)
-	END
-GO
--- -------------
--- Procedures
--- -------------
-CREATE PROCEDURE toyWinner(@toyID int)
--- Returns a set of information about a toy's winner
-AS
-	Select dbo.ownerName(auctions.winningbidderID) 'Winner',
-	       dbo.toyName(@toyID) 'Toy',
-	       Auctions.winningBid 'Paid' 
-	FROM Auctions
-	Where Auctions.toyID = @toyID 
-GO
 
 -- --------------------------------------------
 -- Users Data
@@ -249,10 +115,6 @@ INSERT INTO Colors (ColorID, ColorName) VALUES (N'brown');
 -- --------------------------------------------
 -- Toys Data
 -- --------------------------------------------
-DELETE FROM Toys;
-GO
-DBCC CHECKIDENT("Toys", RESEED, 0);
-GO
 
 INSERT INTO Toys (Name,NumberLegs,ColorID,OwnerID) VALUES (N'frumy dog', 0, 2, 20);
 INSERT INTO Toys (Name,NumberLegs,ColorID,OwnerID) VALUES (N'wheeled bear', 6, 4, 9);
