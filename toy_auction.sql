@@ -97,21 +97,21 @@ INSERT INTO Users (Name,Email,Phone) VALUES (N'Tweedle Dee', N'tweedles@email.co
 -- --------------------------------------------
 -- Colors Data
 -- --------------------------------------------
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'green');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'red');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'yellow');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'blue');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'orange');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'fuschia');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'indigo');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'violet');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'cyan');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'aqua');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'purple');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'turquoise');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'grey');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'black');
-INSERT INTO Colors (ColorID, ColorName) VALUES (N'brown');
+INSERT INTO Colors (ColorName) VALUES (N'green');
+INSERT INTO Colors (ColorName) VALUES (N'red');
+INSERT INTO Colors (ColorName) VALUES (N'yellow');
+INSERT INTO Colors (ColorName) VALUES (N'blue');
+INSERT INTO Colors (ColorName) VALUES (N'orange');
+INSERT INTO Colors (ColorName) VALUES (N'fuschia');
+INSERT INTO Colors (ColorName) VALUES (N'indigo');
+INSERT INTO Colors (ColorName) VALUES (N'violet');
+INSERT INTO Colors (ColorName) VALUES (N'cyan');
+INSERT INTO Colors (ColorName) VALUES (N'aqua');
+INSERT INTO Colors (ColorName) VALUES (N'purple');
+INSERT INTO Colors (ColorName) VALUES (N'turquoise');
+INSERT INTO Colors (ColorName) VALUES (N'grey');
+INSERT INTO Colors (ColorName) VALUES (N'black');
+INSERT INTO Colors (ColorName) VALUES (N'brown');
 -- --------------------------------------------
 -- Toys Data
 -- --------------------------------------------
