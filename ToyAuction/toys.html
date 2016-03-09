@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Toy API</title>
+	<meta charset="utf-8"/>
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+	<script>
+		function init() {
+			$.ajax({
+				url: '@Url.Action("Get", "init")',
+				data: {},
+				type: "GET",
+				datatype: 'json',
+				contentType: 'application/json; charset=utf-8',
+				async: false,
+				success: function(data) {
+					alert(data.results);
+				}
+			});
+
+			alert("initialized");
+		}
+	</script>
+</head>
+<body onload="init">
+<table>
+	<tr>
+		<td>
+			<h2>All Toys</h2></td>
+		<td>
+			<h2>Search Toys</h2></td>
+	</tr>
+	<tr>
+		<td id="toylist" rowspan="40"><ul id="toys"></ul></td>
+		<td rowspan="1"><input type="text" id="toyID" size="5"/></td>
+	</tr>
+	<tr>
+		<td rowspan="1"><input type="button" value="Search" onclick="find();"/></td>
+	</tr>
+	<tr>
+		<td rowspan="1"><p id="toy"/></td>
+	</tr>
+</table>
+
+<script>
+	var uri = "api/toys";
+	$(document).ready(function() {
+
+		var count = 0;
+		$.getJSON(uri)
+			.done(function(data) {
+
+				$.each(data, function(key, item) {
+					$('<li>', { text: formatItem(item) }).appendTo($('#toys'));
+					count += 1;
+				});
+			});
+		$('#toylist').rowSpan = count;
+	});
+
+	function formatItem(item) {
+		return item.ToyID + ": " + item.Name;
+	}
+
+	function find() {
+		var id = $('#toyID').val();
+		$.getJSON(uri + '/' + id)
+			.done(function(data) {
+				$('#toy').text(formatItem(data));
+			})
+			.fail(function(jqXHR, textStatus, err) {
+				$('#toy').text('Error: ' + err);
+			});
+	}
+</script>
+</body>
+</html>
